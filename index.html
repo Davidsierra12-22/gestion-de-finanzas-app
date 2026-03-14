@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONEY FLOW - Registro de Gastos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body style="background-image: url('img/Gemini_Generated_Image_giv1lbgiv1lbgiv1.png');"> 
-    
+
+<body style="background-image: url('img/Gemini_Generated_Image_giv1lbgiv1lbgiv1.png');">
+
     <div class="super-contenedor">
-        
+
         <header class="header-principal">
             <div class="seccion-logo">
                 <img src="img/image-removebg-preview (2).png" alt="Logo" class="logo-imagen">
@@ -19,7 +22,7 @@
                     <p class="logo-lema">Simplifica tus finanzas diarias</p>
                 </div>
             </div>
-            
+
             <div class="seccion-acciones-usuario">
                 <nav class="navegacion-links">
                     <a href="#">Dashboard</a>
@@ -34,15 +37,17 @@
             </div>
         </header>
 
-        <main class="seccion-principal">
+     <main class="container-fluid py-4 seccion-principal">
+    <div class="row justify-content-center">
+        <div class="col-11 col-lg-10">
             
-            <div class="cabecera-lista">
-                <h2>Lista de Gastos Recientes</h2>
-                
-                <div class="filtros-lista">
-                    <span class="material-icons">filter_list</span>
-                    <label for="filtro-categoria" style="color: #b0b0b0;">Categoría:</label>
-                    <select id="filtro-categoria" class="input-oscuro">
+            <div class="cabecera-lista d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                <h2 class="mb-0">Lista de Gastos Recientes</h2>
+
+                <div class="filtros-lista d-flex align-items-center gap-2 bg-dark p-2 rounded shadow-sm">
+                    <span class="material-icons text-muted">filter_list</span>
+                    <label for="filtro-categoria" class="text-secondary mb-0">Categoría:</label>
+                    <select id="filtro-categoria" class="form-select form-select-sm bg-secondary text-white border-0" style="width: auto;">
                         <option value="todas">Todas</option>
                         <option value="alimentacion">Alimentación</option>
                         <option value="transporte">Transporte</option>
@@ -53,29 +58,35 @@
                 </div>
             </div>
 
-            <table class="tabla-gastos">
-                <thead>
-                    <tr>
-                        <th>FECHA</th>
-                        <th>DESCRIPCIÓN</th>
-                        <th>CATEGORÍA</th>
-                        <th>MONTO (COP)</th>
-                        <th>ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody id="lista-gastos-tbody">
-                    </tbody>
-            </table>
-        </main>
-        
+            <div class="table-responsive shadow-lg rounded">
+                <table class="table table-dark table-hover align-middle mb-0 tabla-gastos">
+                    <thead class="table-group-divider">
+                        <tr>
+                            <th scope="col" class="py-3 px-4">FECHA</th>
+                            <th scope="col" class="py-3">DESCRIPCIÓN</th>
+                            <th scope="col" class="py-3">CATEGORÍA</th>
+                            <th scope="col" class="py-3">MONTO (COP)</th>
+                            <th scope="col" class="py-3 text-center">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-gastos-tbody">
+                        </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+</main>
+
         <div id="popover-agregar" class="popover-formulario hidden">
             <div class="contenido-popover">
                 <div class="cabecera-popover">
                     <h3>Nuevo Gasto</h3>
-                    <button type="button" id="btn-cerrar-popover" class="btn-cerrar"><span class="material-icons">close</span></button>
+                    <button type="button" id="btn-cerrar-popover" class="btn-cerrar"><span
+                            class="material-icons">close</span></button>
                 </div>
 
-                <form id="formulario-gastos">
+                <form id="formulario-gastos" novalidate>
                     <div class="campos-input">
                         <div class="grupo-input">
                             <label for="descripcion-gasto">Descripción</label>
@@ -107,7 +118,7 @@
         </div>
 
         <div class="elementos-flotantes">
-            
+
             <div class="caja-filtro-fechas">
                 <div class="fechas-inputs">
                     <label>Desde: <input type="date" id="fecha-desde" class="input-oscuro"></label>
@@ -123,14 +134,16 @@
                 <span class="balance-texto">Balance Mostrado:</span>
                 <span id="balance-plata" class="balance-monto">$0 COP</span>
             </div>
-            
+
             <div id="icono-flotante-agregar" class="icono-agregar-grande">
                 <span class="material-icons">add</span>
             </div>
         </div>
 
     </div>
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="app.js"></script>
 </body>
+
 </html>

@@ -63,7 +63,48 @@ body {
     color: white;
 }
 .input-oscuro option { background-color: #141e30; color: white; } /* Para que el select no se vea feo al abrir */
+/* Contenedor fijo en la esquina superior derecha */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
+/* Estilo base del Toast */
+.toast {
+    min-width: 250px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease-out forwards;
+    transition: opacity 0.5s ease;
+}
+
+/* Tipos de alerta */
+.toast.danger { background-color: #dc3545; border-left: 5px solid #a71d2a; }
+.toast.success { background-color: #28a745; border-left: 5px solid #1e7e34; }
+
+/* Icono de cerrar */
+.toast .material-icons {
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Animación de entrada */
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
 /* Tabla */
 .tabla-gastos { width: 100%; border-collapse: collapse; font-size: 0.95em; }
 .tabla-gastos thead th { color: #b0b0b0; font-weight: normal; text-align: left; padding: 10px; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
@@ -125,3 +166,6 @@ body {
 .icono-agregar-grande:hover { transform: scale(1.05); }
 
 .hidden { display: none; }
+.iconos-acciones { display: flex; gap: 10px; } /* Esto separa el editar del borrar */
+.icono-editar { color: #28a745; cursor: pointer; }
+.icono-borrar { color: #dc3545; cursor: pointer; }

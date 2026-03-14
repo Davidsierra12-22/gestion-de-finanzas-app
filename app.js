@@ -1,181 +1,162 @@
-// 1. Capturamos los elementos del DOM
 const btnAgregarSuperior = document.getElementById('btn-agregar-gasto-superior');
 const iconoFlotanteAgregar = document.getElementById('icono-flotante-agregar');
 const popoverAgregar = document.getElementById('popover-agregar');
 const btnCerrarPopover = document.getElementById('btn-cerrar-popover');
 const formulario = document.getElementById('formulario-gastos');
 
-// Inputs del formulario
 const inputDescripcion = document.getElementById('descripcion-gasto');
 const inputCategoria = document.getElementById('categoria-gasto');
 const inputMonto = document.getElementById('monto-gasto');
 const inputFecha = document.getElementById('fecha-gasto');
 
-// Elementos de la tabla y balance
 const listaGastosTbody = document.getElementById('lista-gastos-tbody');
 const balanceMontoSpan = document.getElementById('balance-plata');
-
-// Elementos de Filtros
 const selectFiltroCategoria = document.getElementById('filtro-categoria');
 const inputFechaDesde = document.getElementById('fecha-desde');
 const inputFechaHasta = document.getElementById('fecha-hasta');
 const btnCalcularManual = document.getElementById('btn-calcular-manual');
 const btnLimpiarFechas = document.getElementById('btn-limpiar-fechas');
 
-// Arreglo global de gastos
 let misGastos = [];
+let editandoID = null;
 
-// 2. Cargar datos al iniciar
 document.addEventListener('DOMContentLoaded', () => {
     const gastosGuardados = localStorage.getItem('gastosMoneyFlow');
-    if (gastosGuardados) {
-        misGastos = JSON.parse(gastosGuardados);
-    }
-    // Al cargar, aplicamos filtros (que por defecto muestran todo)
-    aplicarFiltrosYMostrar(); 
+    if (gastosGuardados) misGastos = JSON.parse(gastosGuardados);
+    aplicarFiltrosYMostrar();
 });
 
-// 3. Control del Popover
+// --- FUNCIÓN PARA ALERTAS PERSONALIZADAS (TOAST) ---
+function showToast(message, type = "success") {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <span>${message}</span>
+        <span class="material-icons" onclick="this.parentElement.remove()">close</span>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
 function mostrarPopover() { popoverAgregar.classList.remove('hidden'); }
 function ocultarPopover() { 
     popoverAgregar.classList.add('hidden'); 
-    formulario.reset(); // Limpia los campos
+    formulario.reset(); 
+    editandoID = null; 
 }
 
 btnAgregarSuperior.addEventListener('click', mostrarPopover);
 iconoFlotanteAgregar.addEventListener('click', mostrarPopover);
-btnCerrarPopover.addEventListener('click', ocultarPopover); // El botón de la X
+btnCerrarPopover.addEventListener('click', ocultarPopover);
 
-// 4. Guardar un nuevo gasto (con TODAS las validaciones)
+// --- LÓGICA DE VALIDACIÓN Y ENVÍO ---
 formulario.addEventListener('submit', function(evento) {
     evento.preventDefault();
-
+    
     const descripcion = inputDescripcion.value.trim();
     const categoria = inputCategoria.value;
     const monto = parseFloat(inputMonto.value);
     const fecha = inputFecha.value;
 
-    // Validación 1: Campos vacíos
-    if (!descripcion || !categoria || !fecha || isNaN(monto)) {
-        alert('Por favor, no dejes ningún campo vacío.');
-        return;
+    // VALIDACIONES PERSONALIZADAS
+    if (!descripcion) {
+        return showToast("✍️ Escribe una descripción para el gasto", "danger");
+    }
+    if (!categoria) {
+        return showToast("📂 Selecciona una categoría", "danger");
+    }
+    if (isNaN(monto) || monto <= 0) {
+        return showToast("💰 Ingresa un monto válido mayor a 0", "danger");
+    }
+    if (!fecha) {
+        return showToast("📅 Selecciona una fecha", "danger");
     }
 
-    // Validación 2: Monto coherente
-    if (monto <= 0) {
-        alert('El monto debe ser mayor a cero.');
-        return;
-    }
-
-    // Validación 3: No fechas futuras
-    // Obtenemos la fecha de hoy en formato 'YYYY-MM-DD' para compararla fácil
-    const fechaHoy = new Date().toISOString().split('T')[0]; 
+    const fechaHoy = new Date().toISOString().split('T')[0];
     if (fecha > fechaHoy) {
-        alert('No puedes registrar gastos con fechas futuras.');
-        return;
+        return showToast("🚫 No puedes registrar gastos en el futuro", "danger");
     }
 
-    // Si pasa las validaciones, creamos el objeto
-    const nuevoGasto = {
-        id: Date.now(),
-        fecha: fecha,
-        descripcion: descripcion,
-        categoria: categoria,
-        monto: monto
-    };
+    // MODO EDICIÓN O CREACIÓN
+    if (editandoID) {
+        misGastos = misGastos.map(g => g.id === editandoID ? { ...g, descripcion, categoria, monto, fecha } : g);
+        showToast("✏️ Gasto actualizado con éxito", "success");
+        editandoID = null;
+    } else {
+        misGastos.push({ id: Date.now(), fecha, descripcion, categoria, monto });
+        showToast("✅ Gasto registrado correctamente", "success");
+    }
 
-    misGastos.push(nuevoGasto);
     sincronizarLocalStorage();
-    
-    // Volvemos a pintar la tabla
     aplicarFiltrosYMostrar();
     ocultarPopover();
 });
 
-// 5. Función maestra que filtra, pinta la tabla y calcula el balance
 function aplicarFiltrosYMostrar() {
-    const categoriaSeleccionada = selectFiltroCategoria.value;
-    const fechaDesde = inputFechaDesde.value;
-    const fechaHasta = inputFechaHasta.value;
+    let filtrados = misGastos;
+    if (selectFiltroCategoria.value !== 'todas') filtrados = filtrados.filter(g => g.categoria === selectFiltroCategoria.value);
+    if (inputFechaDesde.value) filtrados = filtrados.filter(g => g.fecha >= inputFechaDesde.value);
+    if (inputFechaHasta.value) filtrados = filtrados.filter(g => g.fecha <= inputFechaHasta.value);
 
-    // Empezamos asumiendo que vamos a mostrar todos los gastos
-    let gastosAFiltrar = misGastos;
-
-    // Filtro por Categoría
-    if (categoriaSeleccionada !== 'todas') {
-        gastosAFiltrar = gastosAFiltrar.filter(gasto => gasto.categoria === categoriaSeleccionada);
-    }
-
-    // Filtro Manual por Fechas (Rango)
-    if (fechaDesde) {
-        // Nos quedamos con los gastos cuya fecha sea mayor o igual a 'Desde'
-        gastosAFiltrar = gastosAFiltrar.filter(gasto => gasto.fecha >= fechaDesde);
-    }
-    if (fechaHasta) {
-        // Nos quedamos con los gastos cuya fecha sea menor o igual a 'Hasta'
-        gastosAFiltrar = gastosAFiltrar.filter(gasto => gasto.fecha <= fechaHasta);
-    }
-
-    // Limpiamos la tabla
     listaGastosTbody.innerHTML = '';
-    let sumatoriaTotal = 0;
-
-    // Recorremos el arreglo ya filtrado para pintarlo
-    gastosAFiltrar.forEach(function(gasto) {
-        sumatoriaTotal += gasto.monto;
-
-        // Para mostrar la categoría más bonita (ej: 'transporte' -> 'Transporte')
-        const categoriaBonita = gasto.categoria.charAt(0).toUpperCase() + gasto.categoria.slice(1);
-        const montoFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(gasto.monto);
-
+    let total = 0;
+    filtrados.forEach(g => {
+        total += g.monto;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${gasto.fecha}</td>
-            <td>${gasto.descripcion}</td>
-            <td>${categoriaBonita}</td>
-            <td class="valor-monto">${montoFormateado}</td>
+            <td>${g.fecha}</td>
+            <td>${g.descripcion}</td>
+            <td>${g.categoria.charAt(0).toUpperCase() + g.categoria.slice(1)}</td>
+            <td class="valor-monto">${new Intl.NumberFormat('es-CO', {style:'currency', currency:'COP'}).format(g.monto)}</td>
             <td class="iconos-acciones">
-                <span class="material-icons icono-borrar" onclick="borrarGasto(${gasto.id})">delete</span>
+                <span class="material-icons icono-editar" onclick="editarGasto(${g.id})">edit</span>
+                <span class="material-icons icono-borrar" onclick="borrarGasto(${g.id})">delete</span>
             </td>
         `;
         listaGastosTbody.appendChild(tr);
     });
-
-    // Actualizamos el Balance Total basado en los filtros aplicados
-    const balanceFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(sumatoriaTotal);
-    balanceMontoSpan.innerText = balanceFormateado;
+    balanceMontoSpan.innerText = new Intl.NumberFormat('es-CO', {style:'currency', currency:'COP'}).format(total);
 }
 
-// 6. Eventos para activar los filtros
-// Cuando cambia la categoría en el select, se actualiza automáticamente
-selectFiltroCategoria.addEventListener('change', aplicarFiltrosYMostrar);
-
-// Cuando le damos al botón de "Calcular Balance Rango", aplica las fechas
-btnCalcularManual.addEventListener('click', function() {
-    if(!inputFechaDesde.value && !inputFechaHasta.value){
-        alert("Selecciona al menos una fecha para filtrar.");
-        return;
+function editarGasto(id) {
+    const gasto = misGastos.find(g => g.id === id);
+    if (gasto) {
+        inputDescripcion.value = gasto.descripcion;
+        inputCategoria.value = gasto.categoria;
+        inputMonto.value = gasto.monto;
+        inputFecha.value = gasto.fecha;
+        editandoID = id;
+        mostrarPopover();
     }
-    aplicarFiltrosYMostrar();
-});
+}
 
-// Botón para limpiar las fechas y ver todo de nuevo
-btnLimpiarFechas.addEventListener('click', function() {
-    inputFechaDesde.value = '';
-    inputFechaHasta.value = '';
-    aplicarFiltrosYMostrar(); // Al limpiar, vuelve a mostrar todo (respetando la categoría si hay una)
-});
-
-// 7. Borrar gasto
-function borrarGasto(idGasto) {
-    if (confirm('¿Seguro que deseas eliminar este gasto?')) {
-        misGastos = misGastos.filter(gasto => gasto.id !== idGasto);
+function borrarGasto(id) {
+    // Aquí puedes dejar el confirm o hacer un Toast que pida confirmación, 
+    // pero por ahora usemos confirm para seguridad.
+    if (confirm('¿Deseas eliminar este registro?')) {
+        misGastos = misGastos.filter(g => g.id !== id);
         sincronizarLocalStorage();
-        aplicarFiltrosYMostrar(); // Actualiza la vista
+        aplicarFiltrosYMostrar();
+        showToast("🗑️ Gasto eliminado", "success");
     }
 }
 
-// 8. Guardar en Storage
-function sincronizarLocalStorage() {
-    localStorage.setItem('gastosMoneyFlow', JSON.stringify(misGastos));
+function sincronizarLocalStorage() { 
+    localStorage.setItem('gastosMoneyFlow', JSON.stringify(misGastos)); 
 }
+
+selectFiltroCategoria.addEventListener('change', aplicarFiltrosYMostrar);
+btnCalcularManual.addEventListener('click', aplicarFiltrosYMostrar);
+btnLimpiarFechas.addEventListener('click', () => { 
+    inputFechaDesde.value = ''; 
+    inputFechaHasta.value = ''; 
+    aplicarFiltrosYMostrar(); 
+    showToast("🧹 Filtros de fecha limpiados", "success");
+});
