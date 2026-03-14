@@ -1,4 +1,10 @@
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+/* --- RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
 body {
     background-repeat: no-repeat;
@@ -12,6 +18,7 @@ body {
     overflow-x: hidden;
 }
 
+/* --- ESTRUCTURA PRINCIPAL --- */
 .super-contenedor {
     background-color: rgba(20, 30, 48, 0.95);
     color: white;
@@ -24,46 +31,332 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: hidden;
+    /* CRUCIAL para que los flotantes se queden adentro */
 }
 
-/* Header */
-.header-principal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.seccion-logo { display: flex; align-items: center; gap: 15px; }
-.logo-imagen { width: 100px; height: 80px; object-fit: contain; }
-.logo-titulo { font-size: 2.2em; font-weight: bold; }
-.logo-lema { font-size: 0.9em; color: #b0b0b0; }
-.seccion-acciones-usuario { display: flex; align-items: center; gap: 20px; }
-.navegacion-links { display: flex; gap: 20px; }
-.navegacion-links a { text-decoration: none; color: #b0b0b0; font-size: 1em; }
-.navegacion-links a:hover { color: white; }
-.iconos-derecha { display: flex; gap: 10px; color: #b0b0b0; }
-.iconos-derecha .material-icons { font-size: 2em; cursor: pointer; }
+/* --- HEADER --- */
+.header-principal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
 
-/* Botones */
-.btn-principal-verde { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; }
-.btn-principal-verde:hover { background-color: #218838; }
-.btn-secundario-azul { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; font-weight: bold; }
-.btn-secundario-azul:hover { background-color: #0069d9; }
-.btn-secundario-gris { padding: 10px 15px; background-color: #6c757d; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; }
-.btn-secundario-gris:hover { background-color: #5a6268; }
+.seccion-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-/* Sección Principal y Filtros */
-.seccion-principal { flex-grow: 1; overflow-y: auto; }
-.cabecera-lista { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.cabecera-lista h2 { font-size: 1.5em; color: #e0e0e0; }
-.filtros-lista { display: flex; align-items: center; gap: 10px; }
+.logo-imagen {
+    width: 100px;
+    height: 80px;
+    object-fit: contain;
+}
 
-/* Inputs oscuros para filtros */
+.logo-titulo {
+    font-size: 2.2em;
+    font-weight: bold;
+}
+
+.logo-lema {
+    font-size: 0.9em;
+    color: #b0b0b0;
+}
+
+.seccion-acciones-derecha {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navegacion-links a {
+    text-decoration: none;
+    color: #b0b0b0;
+    font-size: 1em;
+    margin-right: 10px;
+    transition: color 0.3s;
+}
+
+.navegacion-links a:hover {
+    color: white;
+}
+
+.iconos-derecha {
+    display: flex;
+    gap: 10px;
+    color: #b0b0b0;
+}
+
+.iconos-derecha .material-icons {
+    font-size: 2em;
+    cursor: pointer;
+}
+
+/* --- BOTONES --- */
+.btn-principal-verde {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-principal-verde:hover {
+    background-color: #218838;
+}
+
+.btn-secundario-azul {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-secundario-azul:hover {
+    background-color: #0069d9;
+}
+
+.btn-secundario-gris {
+    padding: 10px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.w-100 {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* --- MAIN & TABLA --- */
+.seccion-principal {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.cabecera-lista {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.filtros-lista {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+/* Inputs Estilo Oscuro */
 .input-oscuro {
-    padding: 8px;
+    padding: 8px 12px;
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     color: white;
+    outline: none;
 }
-.input-oscuro option { background-color: #141e30; color: white; } /* Para que el select no se vea feo al abrir */
-/* Contenedor fijo en la esquina superior derecha */
+
+.input-oscuro option {
+    background-color: #141e30;
+    color: white;
+}
+
+/* Tabla Restaurada */
+.tabla-gastos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+}
+
+.tabla-gastos thead {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tabla-gastos th {
+    color: #b0b0b0;
+    font-weight: normal;
+    text-align: left;
+    padding: 15px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabla-gastos tbody td {
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #e0e0e0;
+}
+
+.tabla-gastos tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.iconos-acciones span {
+    margin-right: 10px;
+}
+
+/* --- POPOVER (FORMULARIO) --- */
+.oculto {
+    display: none !important;
+}
+
+.popover-formulario {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #141e30;
+    color: white;
+    width: 350px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.cabecera-popover {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.btn-cerrar {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+.grupo-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.grupo-input label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #b0b0b0;
+    font-size: 0.9em;
+}
+
+.input-form {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: white;
+    outline: none;
+}
+
+.input-form option {
+    background-color: #141e30;
+    color: white;
+}
+
+/* --- ELEMENTOS FLOTANTES INFERIORES --- */
+.elementos-flotantes {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.caja-filtro-fechas {
+    background-color: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.fechas-inputs {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.fechas-inputs label {
+    color: #b0b0b0;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.botones-filtro {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.tarjeta-balance-total {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.balance-texto {
+    font-size: 0.9em;
+    color: #b0b0b0;
+}
+
+.balance-monto {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.icono-agregar-grande {
+    background-color: #007bff;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 2em;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.6);
+    transition: transform 0.2s;
+}
+
+.icono-agregar-grande:hover {
+    transform: scale(1.05);
+}
+
+/* --- TOASTS --- */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -74,7 +367,6 @@ body {
     gap: 10px;
 }
 
-/* Estilo base del Toast */
 .toast {
     min-width: 250px;
     padding: 15px 20px;
@@ -84,88 +376,27 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     animation: slideIn 0.3s ease-out forwards;
     transition: opacity 0.5s ease;
 }
 
-/* Tipos de alerta */
-.toast.danger { background-color: #dc3545; border-left: 5px solid #a71d2a; }
-.toast.success { background-color: #28a745; border-left: 5px solid #1e7e34; }
-
-/* Icono de cerrar */
-.toast .material-icons {
-    font-size: 18px;
-    cursor: pointer;
-    margin-left: 10px;
+.toast.danger {
+    background-color: #dc3545;
 }
 
-/* Animación de entrada */
+.toast.success {
+    background-color: #28a745;
+}
+
 @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
-/* Tabla */
-.tabla-gastos { width: 100%; border-collapse: collapse; font-size: 0.95em; }
-.tabla-gastos thead th { color: #b0b0b0; font-weight: normal; text-align: left; padding: 10px; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
-.tabla-gastos tbody td { padding: 15px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-.tabla-gastos tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); }
-.valor-monto { color: #dc3545; font-weight: bold; }
-.iconos-acciones .material-icons { cursor: pointer; font-size: 1.2em; margin-right: 5px; }
-.icono-borrar { color: #dc3545; }
-
-/* Popover */
-.popover-formulario {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background-color: rgba(20, 30, 48, 0.98); color: white;
-    width: 320px; padding: 20px; border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8); z-index: 100;
-}
-.cabecera-popover { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-.cabecera-popover h3 { color: #e0e0e0; font-size: 1.2em;}
-
-/* Botón X para cerrar */
-.btn-cerrar { background: none; border: none; color: #dc3545; cursor: pointer; }
-.btn-cerrar:hover { color: #ff4d4d; }
-
-.campos-input { margin-bottom: 15px; }
-.grupo-input { display: flex; flex-direction: column; margin-bottom: 10px; }
-.grupo-input label { margin-bottom: 3px; font-weight: bold; color: #b0b0b0; font-size: 0.9em; }
-.grupo-input input, .grupo-input select { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-#btn-guardar-gasto-popover { width: 100%; }
-
-/* Elementos Flotantes (Balance y Filtro Manual) */
-.elementos-flotantes {
-    position: absolute; bottom: 30px; right: 30px;
-    display: flex; flex-direction: column; align-items: flex-end; gap: 15px;
-}
-
-.caja-filtro-fechas {
-    background-color: rgba(20, 30, 48, 0.9);
-    padding: 15px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex; flex-direction: column; gap: 10px;
-}
-.fechas-inputs { display: flex; gap: 10px; align-items: center; }
-.fechas-inputs label { color: #b0b0b0; font-size: 0.9em; display: flex; align-items: center; gap: 5px; }
-.botones-filtro { display: flex; gap: 10px; justify-content: flex-end; }
-
-.tarjeta-balance-total {
-    background-color: rgba(20, 30, 48, 0.9); color: white; padding: 10px 15px;
-    border-radius: 5px; border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex; gap: 10px; align-items: center;
-}
-.balance-texto { font-size: 0.9em; }
-.balance-monto { font-size: 1.3em; font-weight: bold; color: #28a745; }
-
-.icono-agregar-grande {
-    background-color: #007bff; color: white; width: 60px; height: 60px;
-    border-radius: 50%; display: flex; justify-content: center; align-items: center;
-    cursor: pointer; font-size: 2em; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    transition: transform 0.2s;
-}
-.icono-agregar-grande:hover { transform: scale(1.05); }
-
-.hidden { display: none; }
-.iconos-acciones { display: flex; gap: 10px; } /* Esto separa el editar del borrar */
-.icono-editar { color: #28a745; cursor: pointer; }
-.icono-borrar { color: #dc3545; cursor: pointer; }
